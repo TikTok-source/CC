@@ -119,7 +119,8 @@ function review(){
    alert('Debes cargar las dos fotos: frente y reverso del cheque.');
    return;
  }
- const n=parseFloat(($('amount').value||'').replace(/[$,]/g,''));
+ const displayedAmount=$('amountDisplay').textContent.replace(/[$,]/g,'').trim();
+  const n=parseFloat(displayedAmount);
  if(!Number.isFinite(n)||n<=0){alert('Introduce un importe válido.');return}
  amount=n;
  $('reviewAmount').value=amount.toFixed(2);
