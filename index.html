@@ -1,162 +1,109 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Deposit Check — Demo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Bank Demo - Depósito</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#e8e8ea;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;color:#170d18}
-.phone{width:100%;max-width:719px;min-height:100vh;margin:auto;background:#fff;position:relative;overflow:hidden}
-.status{height:32px;padding:7px 22px 0;font-weight:600;font-size:14px;display:flex;justify-content:space-between}
-.status span:last-child{font-size:13px}
-.topbar{height:82px;display:flex;align-items:center;padding:0 31px;border-bottom:0 solid #eee}
-.brand{width:42px;height:42px;border-radius:7px;background:#5b123f;color:white;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800}
-.topicons{margin-left:auto;display:flex;gap:25px;align-items:center;font-size:27px}
-.topicons .small{font-size:23px}
-.topicons .name{font-size:19px;margin-left:-15px}
-.content{padding:17px 31px 0}
-.title{font-size:31px;line-height:1.28;letter-spacing:.01em;margin:0 0 13px;font-weight:500;color:#240c25}
-.balanceLabel{font-size:23px;color:#4b454b;margin-bottom:82px}
-.balanceLabel b{font-weight:500;color:#231824}
-.amountWrap{text-align:center}
-.amount{font-size:78px;line-height:1;font-weight:400;color:#170d18;display:inline-flex;align-items:center;min-width:310px;justify-content:center;border-bottom:3px solid #5b123f;padding:0 18px 11px}
-.amount .cursor{display:inline-block;width:2px;height:72px;background:#aaa;margin-left:3px;animation:blink 1s step-end infinite}
-@keyframes blink{50%{opacity:0}}
-.limits{text-align:center;color:#716b70;font-size:20px;line-height:1.45;margin-top:17px}
-.sectionLabel{font-size:21px;color:#6d676c;margin:82px 0 15px}
-.uploads{display:grid;grid-template-columns:1fr 1fr;gap:30px}
-.uploadBox{height:112px;border:2px solid #3e153b;border-radius:18px;display:flex;align-items:center;justify-content:center;position:relative;background:#fff}
-.uploadBox input{display:none}
-.cam{width:54px;height:54px;border-radius:50%;background:#5b123f;color:#fff;display:grid;place-items:center;font-size:29px;box-shadow:0 1px 2px #0002}
-.label{font-size:20px;text-align:center;margin-top:14px}
-.preview{display:none;margin-top:10px;border-radius:12px;overflow:hidden;border:1px solid #ddd;background:#eee}
-.preview img{display:block;width:100%;height:150px;object-fit:contain}
-.bottom{height:85px;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(719px,100%);background:#fff;border-top:1px solid #ddd;display:flex;align-items:center;justify-content:flex-end;padding:0 29px;z-index:10}
-.done{border:0;background:none;color:#180b18;font-size:22px;padding:15px 0 15px 30px}
-.done span{font-size:32px;color:#777;vertical-align:-2px;margin-left:3px}
-.keypad{display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(719px,100%);background:#e9e9eb;z-index:9;padding:8px 7px 18px}
-.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.key{height:77px;border:0;border-radius:8px;background:#fafafa;font-size:31px;box-shadow:0 1px 1px #0001}
-.key small{display:block;font-size:12px;font-weight:600;letter-spacing:1px;margin-top:-4px}
-.key.zero{background:#cfd3e5}
-.key.blank{background:transparent;box-shadow:none}
-.back{position:absolute;left:30px;color:#5b123f;background:none;border:0;font-size:18px;display:none}
-.screen{display:none}
-.screen.active{display:block}
-.verify{padding:55px 31px;text-align:center}
-.circleCheck{width:92px;height:92px;border:7px solid #5b123f;border-radius:50%;margin:20px auto;font-size:55px;color:#5b123f;display:grid;place-items:center}
-.verify h2{font-size:29px;font-weight:500}
-.verify p{font-size:19px;color:#69636a;line-height:1.45}
-.primary{width:100%;border:0;border-radius:12px;background:#5b123f;color:#fff;font-size:19px;padding:17px;margin-top:20px}
-.demo{font-size:11px;color:#888;text-align:center;margin:20px 0 100px}
+*{box-sizing:border-box}body{margin:0;background:#eee;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;color:#1c1020}
+:root{--purple:#4f0a49;--gray:#777176}
+.app{width:min(719px,100%);min-height:100vh;margin:auto;background:#fff;overflow:hidden}
+.status{height:42px;padding:11px 27px 0;display:flex;justify-content:space-between;font-size:16px;font-weight:600}
+.header{height:72px;padding:0 38px;display:flex;align-items:center}
+.logo{width:43px;height:43px;background:var(--purple);border-radius:7px;color:white;display:grid;place-items:center;font-size:27px;font-weight:800}
+.headerRight{margin-left:auto;display:flex;gap:25px;align-items:center;font-size:27px}.headerRight .word{font-size:19px}
+.page{padding:7px 30px 120px}
+.title{font-size:31px;line-height:1.3;font-weight:400;margin:0 0 13px;color:#250d27}
+.balance{font-size:22px;color:#474148;margin-bottom:82px}
+.amount{text-align:center;font-size:79px;font-weight:400;line-height:1.1;border-bottom:3px solid var(--purple);padding-bottom:10px;margin:0 0 17px}
+.limits{text-align:center;color:var(--gray);font-size:20px;line-height:1.45}
+.label{font-size:21px;color:#70696f;margin:79px 0 16px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:29px}
+.upload{cursor:pointer;text-align:center}.upload input{display:none}
+.box{height:111px;border:2px solid #34102f;border-radius:17px;display:grid;place-items:center}
+.camera{width:55px;height:55px;border-radius:50%;background:var(--purple);color:#fff;display:grid;place-items:center;font-size:28px}
+.caption{font-size:20px;margin-top:13px}
+.preview{display:none;margin-top:11px;border:1px solid #ddd;border-radius:9px;overflow:hidden}.preview img{width:100%;height:145px;object-fit:contain;background:#eee}
+.donebar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(719px,100%);height:85px;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:flex-end;align-items:center;padding-right:27px;z-index:10}
+.done{border:0;background:none;font-size:22px;color:#160b18}.done span{font-size:31px;color:#777}
+.screen{display:none;min-height:100vh}.screen.active{display:block}
+.back{border:0;background:none;color:var(--purple);font-size:20px;padding:0 20px 0 0}
+.reviewPage{padding:10px 30px 110px}.reviewPage h1{font-size:30px;font-weight:400}.thumbs{display:grid;grid-template-columns:1fr 1fr;gap:10px}.thumb{border:1px solid #ddd;border-radius:8px;overflow:hidden}.thumb img{width:100%;height:120px;object-fit:contain;background:#eee}.thumb p{font-size:12px;margin:7px}
+.input{margin:22px 0}.input label{display:block;color:#777;font-size:14px}.input input{width:100%;border:0;border-bottom:2px solid var(--purple);font-size:32px;padding:8px 0;color:var(--purple);outline:0}
+.btn{width:100%;border-radius:10px;padding:16px;font-size:17px;font-weight:650}.primary{border:0;background:var(--purple);color:#fff}.outline{border:1px solid var(--purple);background:#fff;color:var(--purple);margin-top:10px}
+.center{text-align:center;padding:55px 30px}.check{width:86px;height:86px;border:7px solid var(--purple);border-radius:50%;display:grid;place-items:center;margin:10px auto 24px;font-size:47px;color:var(--purple)}
+.center h1{font-size:29px;font-weight:400}.center p{font-size:18px;color:#6f686e;line-height:1.45}.checks{text-align:left;max-width:330px;margin:30px auto}.checks div{margin:14px 0}.checks b{display:inline-grid;place-items:center;background:var(--purple);color:white;width:22px;height:22px;border-radius:50%;margin-right:9px}
+.summary{background:#f2f1f2;border-radius:12px;text-align:left;padding:16px;margin:24px 0}.summary div{display:flex;justify-content:space-between;padding:7px 0}.activity{border-top:1px solid #ddd;padding:17px 0}.green{color:#087b58}.demo{font-size:10px!important;color:#999!important;text-align:center;margin-top:25px}
 </style>
 </head>
 <body>
-<div class="phone">
+<div class="app">
 
-<div class="screen active" id="depositScreen">
-  <div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div>
-  <div class="topbar">
-    <div class="brand">B</div>
-    <div class="topicons"><span>♧</span><span class="small">▣</span><span class="name">Salir</span></div>
-  </div>
+<section id="deposit" class="screen active">
+<div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div>
+<div class="header"><div class="logo">B</div><div class="headerRight"><span>♧</span><span>▣</span><span class="word">Salir</span></div></div>
+<div class="page">
+<h1 class="title">BANK DEMO CLEAR ACCESS<br>BANKING. 3965</h1>
+<div class="balance">Balance disponible: <b>$152.49</b></div>
+<div class="amount" id="amountDisplay">$100.00</div>
+<div class="limits">Límite diario $2,500.00<br>Límite total $5,000.00</div>
+<div class="label">Fotos</div>
+<div class="cards">
+<label class="upload"><div class="box"><div class="camera">▣</div><input id="front" type="file" accept="image/*" capture="environment"></div><div class="caption">Frente del cheque</div></label>
+<label class="upload"><div class="box"><div class="camera">▣</div><input id="back" type="file" accept="image/*" capture="environment"></div><div class="caption">Reverso del cheque</div></label>
+</div>
+<div id="frontPreview" class="preview"></div><div id="backPreview" class="preview"></div>
+<p class="demo">PROTOTIPO DEMO — no procesa dinero real.</p>
+</div>
+<div class="donebar"><button class="done" onclick="review()">Listo <span>›</span></button></div>
+</section>
 
-  <div class="content">
-    <h1 class="title">BANK DEMO CLEAR ACCESS<br>ACCOUNT •••• 3965</h1>
-    <div class="balanceLabel">Balance disponible: <b>$152.49</b></div>
+<section id="review" class="screen">
+<div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div><div class="header"><button class="back" onclick="go('deposit')">‹</button><div class="logo">B</div></div>
+<div class="reviewPage"><h1>Revisar depósito</h1><p style="color:#777">Confirma las dos imágenes antes de comprobar el cheque.</p>
+<div class="thumbs"><div class="thumb" id="fthumb"></div><div class="thumb" id="bthumb"></div></div>
+<div class="input"><label>Importe</label><input id="reviewAmount" inputmode="decimal"></div>
+<button class="btn primary" onclick="verify()">Comprobar cheque</button>
+<button class="btn outline" onclick="go('deposit')">Volver</button>
+<p class="demo">DEMO — las imágenes no se envían a un banco.</p></div>
+</section>
 
-    <div class="amountWrap">
-      <div class="amount" id="amountDisplay">$100.00<span class="cursor"></span></div>
-      <div class="limits">Límite diario $2,500.00<br>Límite total $5,000.00</div>
-    </div>
+<section id="verify" class="screen">
+<div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div><div class="header"><div class="logo">B</div></div>
+<div class="center"><div class="check">✓</div><h1>Comprobando tu cheque…</h1><p>Estamos comprobando la calidad de las imágenes y los datos.</p>
+<div class="checks"><div><b>✓</b>Calidad de imagen</div><div><b>✓</b>Detalles del cheque</div><div><b>✓</b>Comprobación de seguridad</div></div></div>
+</section>
 
-    <div class="sectionLabel">Fotos del cheque</div>
-    <div class="uploads">
-      <label>
-        <div class="uploadBox"><div class="cam">▣</div>
-          <input id="frontInput" type="file" accept="image/*" capture="environment">
-        </div>
-        <div class="label">Frente del cheque</div>
-      </label>
-      <label>
-        <div class="uploadBox"><div class="cam">▣</div>
-          <input id="backInput" type="file" accept="image/*" capture="environment">
-        </div>
-        <div class="label">Reverso del cheque</div>
-      </label>
-    </div>
-    <div id="frontPreview" class="preview"></div>
-    <div id="backPreview" class="preview"></div>
-    <p class="demo">PROTOTIPO DEMO — no procesa dinero real ni se conecta a ningún banco.</p>
-  </div>
+<section id="approved" class="screen">
+<div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div><div class="header"><div class="logo">B</div></div>
+<div class="center"><div class="check">✓</div><h1>Depósito aprobado</h1><p>El depósito ha sido aprobado en esta simulación.</p>
+<div class="summary"><div><span>Importe</span><strong id="approvedAmount">$100.00</strong></div><div><span>Disponible</span><strong>Ahora (demo)</strong></div></div>
+<button class="btn primary" onclick="updateBalance()">Ver balance actualizado</button><p class="demo">PROTOTIPO DEMO — no representa fondos reales.</p></div>
+</section>
 
-  <div class="bottom"><button class="done" onclick="review()">Listo <span>›</span></button></div>
+<section id="updated" class="screen">
+<div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div><div class="header"><div class="logo">B</div></div>
+<div class="reviewPage"><h1>Balance actualizado</h1><div class="balance">Cuenta •••• 3965</div>
+<div class="summary"><div><span>Balance anterior</span><strong id="old">$152.49</strong></div><div><span>Depósito</span><strong class="green" id="plus">+$100.00</strong></div><hr><div><b>Nuevo balance</b><strong style="color:var(--purple);font-size:26px" id="new">$252.49</strong></div></div>
+<button class="btn primary" onclick="activity()">Ver actividad</button><p class="demo">PROTOTIPO DEMO — balance ficticio.</p></div>
+</section>
 
-  <div class="keypad" id="keypad">
-    <div class="keys">
-      <button class="key" onclick="key('1')">1</button>
-      <button class="key" onclick="key('2')">2<small>ABC</small></button>
-      <button class="key" onclick="key('3')">3<small>DEF</small></button>
-      <button class="key" onclick="key('4')">4<small>GHI</small></button>
-      <button class="key" onclick="key('5')">5<small>JKL</small></button>
-      <button class="key" onclick="key('6')">6<small>MNO</small></button>
-      <button class="key" onclick="key('7')">7<small>PQRS</small></button>
-      <button class="key" onclick="key('8')">8<small>TUV</small></button>
-      <button class="key" onclick="key('9')">9<small>WXYZ</small></button>
-      <button class="key blank"></button>
-      <button class="key zero" onclick="key('0')">0</button>
-      <button class="key" onclick="backspace()">⌫</button>
-    </div>
-  </div>
+<section id="activity" class="screen">
+<div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div><div class="header"><div class="logo">B</div><div class="headerRight"><span>♧</span><span>▣</span><span class="word">Salir</span></div></div>
+<div class="reviewPage"><h1>Actividad reciente</h1><div id="list"></div><p class="demo">PROTOTIPO DEMO — sin transacciones reales.</p></div></section>
 </div>
 
-<div class="screen" id="verifyScreen">
-  <div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div>
-  <div class="topbar"><button class="back" style="display:block" onclick="goBack()">‹ Volver</button><div class="brand">B</div></div>
-  <div class="verify">
-    <div class="circleCheck">✓</div>
-    <h2>Cheque comprobado</h2>
-    <p>Las imágenes fueron cargadas correctamente y el importe está listo para la simulación.</p>
-    <h2 id="reviewAmount">$100.00</h2>
-    <button class="primary" onclick="approve()">Acreditar en balance (Demo)</button>
-    <p class="demo">SIMULACIÓN — el cambio de balance es solamente local en esta página.</p>
-  </div>
-</div>
-
-<div class="screen" id="approvedScreen">
-  <div class="status"><span>9:41</span><span>▮▮▮ ◉ ▰</span></div>
-  <div class="topbar"><div class="brand">B</div></div>
-  <div class="verify">
-    <div class="circleCheck">✓</div>
-    <h2>Depósito aprobado</h2>
-    <p>El balance de demostración fue actualizado.</p>
-    <div style="border:1px solid #ddd;border-radius:14px;padding:20px;text-align:left">
-      <p style="margin:0 0 10px">Balance anterior <b style="float:right" id="old">$152.49</b></p>
-      <p style="margin:0 0 10px">Depósito <b style="float:right" id="dep">+$100.00</b></p>
-      <hr>
-      <p style="margin:10px 0 0;font-size:21px">Nuevo balance <b style="float:right;color:#5b123f" id="new">$252.49</b></p>
-    </div>
-    <button class="primary" onclick="location.reload()">Volver a la cuenta</button>
-    <p class="demo">PROTOTIPO DEMO — no representa fondos reales.</p>
-  </div>
-</div>
-
-</div>
 <script>
-let raw="100.00", balance=152.49, front=false, back=false;
-const $=id=>document.getElementById(id);
-function render(){ $('amountDisplay').innerHTML='$'+(parseFloat(raw||'0')||0).toFixed(2)+'<span class="cursor"></span>'; }
-function key(k){ if(raw==="0")raw=""; raw+=k; if(raw.length>7)raw=raw.slice(0,7); render(); }
-function backspace(){raw=raw.slice(0,-1)||"0";render();}
-$('amountDisplay').onclick=()=>{$('keypad').style.display='block'}
-document.addEventListener('click',e=>{if(!e.target.closest('.keypad')&&!e.target.closest('.amount')) $('keypad').style.display='none'});
-function photo(input, id, flag){input.addEventListener('change',()=>{if(!input.files[0])return;let r=new FileReader();r.onload=e=>{$(id).innerHTML='<img src="'+e.target.result+'" alt="Vista previa">';$(id).style.display='block'};r.readAsDataURL(input.files[0]);window[flag]=true;})}
-photo($('frontInput'),'frontPreview','front'); photo($('backInput'),'backPreview','back');
-function review(){ $('keypad').style.display='none'; let n=parseFloat(raw); if(!front||!back){alert('Para esta demo, sube el frente y el reverso del cheque.');return} if(!n||n<=0){alert('Introduce un importe válido.');return} $('reviewAmount').textContent='$'+n.toFixed(2); $('depositScreen').classList.remove('active');$('verifyScreen').classList.add('active'); }
-function goBack(){$('verifyScreen').classList.remove('active');$('depositScreen').classList.add('active')}
-function approve(){let n=parseFloat(raw);let old=balance;balance+=n;$('old').textContent='$'+old.toFixed(2);$('dep').textContent='+$'+n.toFixed(2);$('new').textContent='$'+balance.toFixed(2);$('verifyScreen').classList.remove('active');$('approvedScreen').classList.add('active')}
-render();
+let frontFile=null,backFile=null,amount=100,balance=152.49;
+const $=x=>document.getElementById(x);
+function go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');scrollTo(0,0)}
+function load(input,preview,setter){input.addEventListener('change',()=>{let f=input.files[0];if(!f)return;setter(f);let r=new FileReader();r.onload=e=>{$(preview).innerHTML='<img src="'+e.target.result+'">';$(preview).style.display='block'};r.readAsDataURL(f)})}
+load($('front'),'frontPreview',f=>frontFile=f);load($('back'),'backPreview',f=>backFile=f);
+function money(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function review(){if(!frontFile||!backFile){alert('Sube el frente y el reverso del cheque.');return} $('reviewAmount').value=amount.toFixed(2);$('fthumb').innerHTML='<img src="'+$('frontPreview').querySelector('img').src+'"><p>Frente del cheque</p>';$('bthumb').innerHTML='<img src="'+$('backPreview').querySelector('img').src+'"><p>Reverso del cheque</p>';go('review')}
+function verify(){amount=parseFloat($('reviewAmount').value.replace(/[$,]/g,''));if(!amount||amount<=0){alert('Importe inválido');return}$('approvedAmount').textContent=money(amount);go('verify');setTimeout(()=>go('approved'),1500)}
+function updateBalance(){let old=balance;balance+=amount;$('old').textContent=money(old);$('plus').textContent='+'+money(amount);$('new').textContent=money(balance);go('updated')}
+function activity(){$('list').innerHTML='<div class="activity"><div style="display:flex;justify-content:space-between"><span>Depósito de cheque <small>(DEMO)</small></span><strong class="green">+'+money(amount)+'</strong></div><small style="color:#777">Ahora</small></div><div class="activity"><div style="display:flex;justify-content:space-between"><span>Compra de tienda</span><strong>-$24.90</strong></div><small style="color:#777">Ayer</small></div>';go('activity')}
 </script>
 </body>
 </html>
