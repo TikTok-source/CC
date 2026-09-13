@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080a10">
+<title>CardFlow</title>
+<style>
+:root{--bg:#080a10;--panel:#111522;--panel2:#171b28;--text:#f7f8fb;--muted:#8d95a8;--line:#262c3b;--accent:#7c5cff;--ok:#35d07f}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif}
+body{min-height:100vh}.app{max-width:480px;margin:auto;min-height:100vh;padding:env(safe-area-inset-top) 18px calc(28px + env(safe-area-inset-bottom));background:radial-gradient(circle at 90% 0,#30256a55,transparent 35%),linear-gradient(180deg,#0e111a,#080a10)}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 20px}.logo{font-weight:900;font-size:25px;letter-spacing:-.8px}.logo span{color:#927cff}.avatar{width:40px;height:40px;border-radius:14px;background:#1b2030;display:grid;place-items:center;font-weight:800}
+h2{font-size:19px;margin:0 0 12px}.muted{color:var(--muted)}
+.card{height:222px;border-radius:25px;padding:22px;position:relative;overflow:hidden;background:linear-gradient(135deg,#33277d,#161b38 58%,#10131e);box-shadow:0 22px 55px #0009}
+.card:before,.card:after{content:"";position:absolute;border-radius:50%;background:#ffffff10}.card:before{width:250px;height:250px;right:-90px;top:-100px}.card:after{width:170px;height:170px;left:-80px;bottom:-100px}
+.brand{position:relative;z-index:1;display:flex;justify-content:space-between;font-weight:900;font-size:16px}.chip{position:relative;z-index:1;width:43px;height:32px;border-radius:7px;background:linear-gradient(135deg,#eee0a3,#b9984d);margin-top:28px;box-shadow:inset 0 0 0 1px #fff6}
+.num{position:relative;z-index:1;font-size:20px;letter-spacing:2px;margin-top:21px}.row{position:relative;z-index:1;display:flex;justify-content:space-between}.label{font-size:8px;color:#c6caD5;text-transform:uppercase;margin-top:15px}.value{font-size:12px;margin-top:3px;font-weight:650}
+.status{display:flex;align-items:center;justify-content:space-between;margin:15px 0}.pill{padding:8px 11px;border-radius:999px;background:#211d35;color:#cfc8ff;font-size:12px;font-weight:700}.pill.ok{background:#113022;color:#80e8ac}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}button{border:0;border-radius:15px;padding:14px 12px;font-size:15px;font-weight:800;background:#fff;color:#0b0d13}button.secondary{background:#1a1f2c;color:#fff;border:1px solid var(--line)}
+.panel{margin-top:14px;padding:17px;border-radius:20px;background:#111521;border:1px solid var(--line)}.paneltop{display:flex;justify-content:space-between;align-items:center}.timer{font-size:28px;font-weight:900}.small{font-size:12px;color:var(--muted);margin-top:4px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.stat{background:#171b27;border:1px solid #252b3a;padding:14px;border-radius:16px}.stat b{display:block;font-size:18px;margin-top:5px}
+.history{margin-top:22px}.item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #1c2130}.left{display:flex;gap:11px;align-items:center}.icon{width:38px;height:38px;border-radius:12px;background:#1a2030;display:grid;place-items:center}.amount{font-weight:800}.date{font-size:11px;color:var(--muted);margin-top:3px}
+.note{font-size:10px;line-height:1.5;color:#667084;text-align:center;margin-top:20px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(15px);opacity:0;background:#f7f8fb;color:#0b0d12;padding:12px 16px;border-radius:14px;font-size:13px;font-weight:800;transition:.25s;pointer-events:none;white-space:nowrap}.toast.show{opacity:1;transform:translateX(-50%)}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;justify-content:center}.sheet{width:min(480px,100%);background:#121621;border:1px solid #292f3d;border-radius:25px 25px 0 0;padding:22px 18px calc(24px + env(safe-area-inset-bottom))}.sheet h3{margin:0 0 8px}.sheet p{color:var(--muted);font-size:13px;line-height:1.5}.close{margin-top:10px}
+
+.card.is-hidden{filter:blur(18px);transform:scale(.985);opacity:.22}
+.card.is-frozen{filter:grayscale(.8) brightness(.65)}
+.card.is-deleted{display:none}
+.action-panel{margin-top:10px;padding:12px 14px;border:1px solid #292f3d;background:#111521;border-radius:15px;font-size:12px;color:#aeb6c7;display:none}
+.action-panel.show{display:block}
+.empty{display:none;padding:34px 18px;text-align:center;border:1px dashed #303749;border-radius:20px;color:#8d95a8}
+.empty.show{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">Card<span>Flow</span></div><div class="avatar">A</div></header>
+
+<h2>Mi tarjeta</h2>
+<div id="cardWrap">
+<section class="card" id="mainCard">
+  <div class="brand"><span>VIRTUAL</span><span>MASTERCARD</span></div>
+  <div class="chip"></div>
+  <div class="num" id="number">5555 0000 1234 5678</div>
+  <div class="row">
+    <div><div class="label">Titular</div><div class="value">ALEX DEMO</div></div>
+    <div><div class="label">Expira</div><div class="value">12/30</div></div>
+    <div><div class="label">CVV</div><div class="value">123</div></div>
+  </div>
+</section>
+</div>
+<div class="empty" id="emptyState"><b>Sin tarjeta activa</b><br><span>Genera una nueva tarjeta ficticia para continuar.</span><button id="restore" style="margin-top:14px">Generar tarjeta</button></div>
+<div class="action-panel" id="actionPanel"></div>
+
+<div class="status"><span class="pill" id="state">🔒 Bloqueada</span><span class="muted" style="font-size:12px">Tarjeta #<b id="cardno">001</b></span></div>
+<div class="actions">
+<button id="activate">Activar</button><button class="secondary" id="copy">Copiar</button>
+<button class="secondary" id="toggle">Ocultar datos</button><button class="secondary" id="freeze">Congelar</button>
+</div>
+
+<section class="panel">
+  <div class="paneltop"><div><b>Próxima tarjeta</b><div class="small">Generación automática</div></div><div class="timer" id="timer">00:30</div></div>
+  <div class="stats"><div class="stat"><span class="small">Tarjetas</span><b id="count">1</b></div><div class="stat"><span class="small">Estado</span><b id="stat">Bloqueada</b></div></div>
+  <button class="secondary" id="generate" style="margin-top:12px">Generar ahora</button>
+<div class="actions" style="margin-top:10px">
+<button class="secondary" id="settings">⚙️ Intervalo</button><button class="secondary" id="delete">🗑️ Eliminar</button>
+</div>
+</section>
+
+<section class="history">
+<h2>Actividad</h2>
+<div class="item"><div class="left"><div class="icon">🔐</div><div><b>Tarjeta creada</b><div class="date">Ahora</div></div></div><span class="amount">#001</span></div>
+<div class="item"><div class="left"><div class="icon">💳</div><div><b>Pago de prueba</b><div class="date">Pendiente</div></div></div><span class="amount">RD$ 0</span></div>
+</section>
+
+<div class="note">Datos de demostración. No son credenciales financieras reales ni pueden utilizarse para realizar compras.</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="settingsModal"><div class="sheet"><h3>Intervalo</h3><p>Elige cada cuánto se genera una nueva tarjeta ficticia.</p>
+<button onclick="setIntervalDemo(15)">15 segundos</button><button onclick="setIntervalDemo(30)">30 segundos</button><button onclick="setIntervalDemo(60)">60 segundos</button>
+<button class="secondary close" onclick="closeSettings()">Cancelar</button></div></div>
+<div class="modal" id="modal"><div class="sheet"><h3>Activar tarjeta</h3><p>Esta demo usa un flujo de pago simulado. No solicita ni almacena números reales de tarjeta, CVV, PIN o credenciales bancarias.</p><button id="confirm">Confirmar pago de prueba</button><button class="secondary close" id="close">Cancelar</button></div></div>
+
+<script>
+let seconds=30, count=1, active=false, frozen=false, hidden=false, intervalDemo=30;
+let currentNumber='5555 0000 1234 5678';
+
+const $=id=>document.getElementById(id);
+function toast(t){
+  $('toast').textContent=t;$('toast').classList.add('show');
+  setTimeout(()=>$('toast').classList.remove('show'),1800)
+}
+function panel(t){
+  $('actionPanel').textContent=t;
+  $('actionPanel').classList.add('show');
+  clearTimeout(window.panelTimer);
+  window.panelTimer=setTimeout(()=>$('actionPanel').classList.remove('show'),2200);
+}
+function randomCardNumber(){
+  let d=Array.from({length:12},()=>Math.floor(Math.random()*10)).join('');
+  return '5555 '+d.slice(0,4)+' '+d.slice(4,8)+' '+d.slice(8);
+}
+function generate(){
+  currentNumber=randomCardNumber();
+  $('number').textContent=hidden?'•••• •••• •••• ••••':currentNumber;
+  count++;
+  $('cardno').textContent=String(count).padStart(3,'0');
+  seconds=intervalDemo;
+  active=false; frozen=false; hidden=false;
+  $('mainCard').className='card';
+  $('cardWrap').style.display='block';
+  $('emptyState').classList.remove('show');
+  $('state').textContent='🔒 Bloqueada';$('state').className='pill';
+  $('stat').textContent='Bloqueada';$('activate').textContent='Activar';
+  $('toggle').textContent='Ocultar tarjeta';$('freeze').textContent='Congelar';
+  toast('Nueva tarjeta creada');panel('🔄 Se generó una nueva tarjeta ficticia');
+}
+function setIntervalDemo(n){
+  intervalDemo=n;seconds=n;closeSettings();
+  toast('Intervalo cambiado a '+n+' segundos');panel('⏱️ Próxima generación cada '+n+' segundos');
+}
+function closeSettings(){$('settingsModal').style.display='none'}
+
+setInterval(()=>{
+  if(frozen)return;
+  if(--seconds<=0)generate();
+  $('timer').textContent='00:'+String(seconds).padStart(2,'0');
+},1000);
+
+$('generate').onclick=generate;
+$('restore').onclick=generate;
+
+$('activate').onclick=()=>{
+  if(frozen){toast('Descongela la tarjeta primero');return}
+  $('modal').style.display='flex';
+};
+
+$('close').onclick=()=>$('modal').style.display='none';
+
+$('confirm').onclick=()=>{
+  active=true;$('modal').style.display='none';
+  $('state').textContent='✓ Activada';$('state').className='pill ok';
+  $('stat').textContent='Activada';$('activate').textContent='Activada';
+  toast('Pago de prueba confirmado');panel('✓ Tarjeta activada correctamente');
+};
+
+$('toggle').onclick=()=>{
+  hidden=!hidden;
+  $('mainCard').classList.toggle('is-hidden',hidden);
+  $('number').textContent=hidden?'•••• •••• •••• ••••':currentNumber;
+  $('toggle').textContent=hidden?'Mostrar tarjeta':'Ocultar tarjeta';
+  toast(hidden?'Tarjeta oculta':'Tarjeta visible');
+  panel(hidden?'👁️ La tarjeta está oculta':'👁️ La tarjeta vuelve a estar visible');
+};
+
+$('freeze').onclick=()=>{
+  frozen=!frozen;
+  $('mainCard').classList.toggle('is-frozen',frozen);
+  $('freeze').textContent=frozen?'Descongelar':'Congelar';
+  $('state').textContent=frozen?'❄️ Congelada':(active?'✓ Activada':'🔒 Bloqueada');
+  $('state').className=frozen?'pill':(active?'pill ok':'pill');
+  $('stat').textContent=frozen?'Congelada':(active?'Activada':'Bloqueada');
+  toast(frozen?'Tarjeta congelada':'Tarjeta descongelada');
+  panel(frozen?'❄️ Acciones de la tarjeta pausadas':'▶️ Acciones de la tarjeta reanudadas');
+};
+
+$('copy').onclick=async()=>{
+  const value=currentNumber;
+  try{await navigator.clipboard.writeText(value);toast('Número ficticio copiado')}
+  catch(e){toast('Número ficticio: '+value)}
+  panel('📋 Copiado: '+value);
+};
+
+$('settings').onclick=()=>$('settingsModal').style.display='flex';
+
+$('delete').onclick=()=>{
+  $('mainCard').classList.add('is-deleted');
+  $('cardWrap').style.display='none';
+  $('emptyState').classList.add('show');
+  active=false;frozen=false;
+  $('state').textContent='Sin tarjeta';$('state').className='pill';
+  $('stat').textContent='Sin tarjeta';
+  toast('Tarjeta eliminada');
+  panel('🗑️ La tarjeta fue eliminada de la vista');
+};
+</script>
+</body>
+</html>
