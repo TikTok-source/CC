@@ -94,13 +94,39 @@
 </div>
 
 <script>
-let frontFile=null,backFile=null,amount=100,balance=152.49;
+let frontData=null,backData=null,amount=100,balance=152.49;
 const $=x=>document.getElementById(x);
 function go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');scrollTo(0,0)}
-function load(input,preview,setter){input.addEventListener('change',()=>{let f=input.files[0];if(!f)return;setter(f);let r=new FileReader();r.onload=e=>{$(preview).innerHTML='<img src="'+e.target.result+'">';$(preview).style.display='block'};r.readAsDataURL(f)})}
-load($('front'),'frontPreview',f=>frontFile=f);load($('back'),'backPreview',f=>backFile=f);
+function load(input,preview,side){
+ input.addEventListener('change',function(){
+   const f=this.files && this.files[0];
+   if(!f)return;
+   const r=new FileReader();
+   r.onload=function(e){
+     if(side==='front') frontData=e.target.result; else backData=e.target.result;
+     const box=$(preview);
+     box.innerHTML='<img src="'+e.target.result+'" alt="Foto del cheque">';
+     box.style.display='block';
+   };
+   r.onerror=function(){alert('No se pudo leer la foto. Intenta seleccionar otra imagen.');};
+   r.readAsDataURL(f);
+ });
+}
+load($('front'),'frontPreview','front');load($('back'),'backPreview','back');
 function money(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function review(){if(!frontFile||!backFile){alert('Sube el frente y el reverso del cheque.');return} $('reviewAmount').value=amount.toFixed(2);$('fthumb').innerHTML='<img src="'+$('frontPreview').querySelector('img').src+'"><p>Frente del cheque</p>';$('bthumb').innerHTML='<img src="'+$('backPreview').querySelector('img').src+'"><p>Reverso del cheque</p>';go('review')}
+function review(){
+ if(!frontData||!backData){
+   alert('Debes cargar las dos fotos: frente y reverso del cheque.');
+   return;
+ }
+ const n=parseFloat(($('amount').value||'').replace(/[$,]/g,''));
+ if(!Number.isFinite(n)||n<=0){alert('Introduce un importe válido.');return}
+ amount=n;
+ $('reviewAmount').value=amount.toFixed(2);
+ $('fthumb').innerHTML='<img src="'+frontData+'" alt="Frente del cheque"><p>Frente del cheque ✓</p>';
+ $('bthumb').innerHTML='<img src="'+backData+'" alt="Reverso del cheque"><p>Reverso del cheque ✓</p>';
+ go('review');
+}
 function verify(){amount=parseFloat($('reviewAmount').value.replace(/[$,]/g,''));if(!amount||amount<=0){alert('Importe inválido');return}$('approvedAmount').textContent=money(amount);go('verify');setTimeout(()=>go('approved'),1500)}
 function updateBalance(){let old=balance;balance+=amount;$('old').textContent=money(old);$('plus').textContent='+'+money(amount);$('new').textContent=money(balance);go('updated')}
 function activity(){$('list').innerHTML='<div class="activity"><div style="display:flex;justify-content:space-between"><span>Depósito de cheque <small>(DEMO)</small></span><strong class="green">+'+money(amount)+'</strong></div><small style="color:#777">Ahora</small></div><div class="activity"><div style="display:flex;justify-content:space-between"><span>Compra de tienda</span><strong>-$24.90</strong></div><small style="color:#777">Ayer</small></div>';go('activity')}
